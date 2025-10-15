@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { projects as base } from "@/lib/projects";
 import ProjectCard from "@/components/ProjectCard";
-import { Sparkles, Globe, Activity } from "lucide-react";
+import { Sparkles, Activity, MessageCircle, Download } from "lucide-react";
 import Link from "next/link";
 
 type Status = { key: string; status: "live"|"degraded"|"down"; latencyMs: number|null; code: number };
@@ -45,8 +45,11 @@ export default function Home() {
             <Link href="#projects" className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 hover:bg-white/15 transition">
               <Activity className="w-4 h-4" /> View Projects
             </Link>
-            <a href="mailto:hello@example.com" className="inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-4 py-2 hover:bg-indigo-600 transition">
-              <Globe className="w-4 h-4" /> Contact
+            <Link href="/contact" className="inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-4 py-2 hover:bg-indigo-600 transition">
+              <MessageCircle className="w-4 h-4" /> Contact
+            </Link>
+            <a href="/Gabriel-Fernandez-Resume.pdf" download className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 hover:bg-white/15 transition">
+              <Download className="w-4 h-4" /> Download Résumé
             </a>
           </div>
         </div>
