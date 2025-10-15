@@ -1,103 +1,72 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+import { projects as base } from "@/lib/projects";
+import ProjectCard from "@/components/ProjectCard";
+import { Sparkles, Globe, Activity } from "lucide-react";
+import Link from "next/link";
+
+type Status = { key: string; status: "live"|"degraded"|"down"; latencyMs: number|null; code: number };
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [status, setStatus] = useState<Record<string, Status>>({});
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const r = await fetch("/api/status", { cache: "no-store" });
+        const json = await r.json();
+        const map: Record<string, Status> = {};
+        for (const s of json.services || []) map[s.key] = s;
+        if (mounted) setStatus(map);
+      } catch {}
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  return (
+    <main className="min-h-screen bg-black text-white">
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_-10%,rgba(99,102,241,.35),transparent_40%),radial-gradient(circle_at_80%_0,rgba(236,72,153,.25),transparent_35%)]" />
+        <div className="relative max-w-6xl mx-auto px-6 py-24">
+          <div className="flex items-center gap-2 text-sm text-zinc-300 mb-6">
+            <Sparkles className="w-4 h-4" />
+            <span>Portfolio</span>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-semibold tracking-tight">
+            Crafting useful apps with <span className="text-indigo-400">taste</span> and{" "}
+            <span className="text-pink-400">speed</span>.
+          </h1>
+          <p className="mt-6 text-zinc-300 max-w-2xl">
+            A small suite of productionized projects tied together with clean architecture and sharp UX.
+          </p>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <Link href="#projects" className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 hover:bg-white/15 transition">
+              <Activity className="w-4 h-4" /> View Projects
+            </Link>
+            <a href="mailto:hello@example.com" className="inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-4 py-2 hover:bg-indigo-600 transition">
+              <Globe className="w-4 h-4" /> Contact
+            </a>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+
+      <section id="projects" className="max-w-6xl mx-auto px-6 py-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
+          {base.map(p => (
+            <ProjectCard
+              key={p.slug}
+              name={p.name}
+              summary={p.summary}
+              href={p.liveUrl}
+              tech={p.tech}
+              status={status[p.slug]?.status}
+              latencyMs={status[p.slug]?.latencyMs ?? undefined}
+            />
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }
